@@ -82,13 +82,13 @@ Year: **2025**
 
 ## Technologies Used
 
-Python 3.11
-AWS S3 (data storage)
-AWS Glue (ETL orchestration)
-AWS Redshift (data warehouse, star schema)
-Power BI (interactive dashboards)
-pandas, numpy, matplotlib, seaborn
-ydata_profiling (data profiling)
-scikit-learn (statistical tests, ANOVA)
-SQL (Data Mart design)
+- Python 3.11
+- AWS S3 (data storage)
+- AWS Glue (ETL orchestration)
+- AWS Redshift (data warehouse, star schema)
+- Power BI (interactive dashboards)
+- pandas, numpy, matplotlib, seaborn
+- ydata_profiling (data profiling)
+- scikit-learn (statistical tests, ANOVA)
+- SQL (Data Mart design)
 
