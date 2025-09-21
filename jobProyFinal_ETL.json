@@ -1,0 +1,7569 @@
+{
+	"jobConfig": {
+		"name": "jodProyFInal",
+		"description": "",
+		"role": "arn:aws:iam::879822987177:role/LabRole",
+		"command": "glueetl",
+		"version": "5.0",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 10,
+		"maxCapacity": 10,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "ProyJob.py",
+		"scriptLocation": "s3://aws-glue-assets-879822987177-us-east-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [],
+		"tags": [],
+		"jobMode": "VISUAL_MODE",
+		"createdOn": "2025-05-15T15:37:50.396Z",
+		"developerMode": false,
+		"connectionsList": [
+			"Redshift connection"
+		],
+		"temporaryDirectory": "s3://aws-glue-assets-879822987177-us-east-1/temporary/",
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"pythonPath": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_common.py,s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_derived.py,s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_uuid.py",
+		"bookmark": "job-bookmark-disable",
+		"sparkPath": "s3://aws-glue-assets-879822987177-us-east-1/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null,
+		"dependentPath": "",
+		"additionalPythonModules": ""
+	},
+	"dag": {
+		"node-1747230271728": {
+			"nodeId": "node-1747230271728",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747142345434"
+			],
+			"name": "agregar anio",
+			"generatedNodeName": "agregaranio_node1747230271728",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"Año"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "expr",
+					"value": [
+						"2018"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_derived",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_derived.py",
+			"version": "1.0.0",
+			"transformName": "gs_derived",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_de_cobertura",
+						"fullPath": [
+							"fa_1_ano_de_cobertura"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747235924801": {
+			"nodeId": "node-1747235924801",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747235741034"
+			],
+			"name": "Renamed keys for Join",
+			"generatedNodeName": "RenamedkeysforJoin_node1747235924801",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "right_departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "right_muertes",
+					"fromPath": [
+						"muertes"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "right_año",
+					"fromPath": [
+						"año"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747235115654": {
+			"nodeId": "node-1747235115654",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747234615474"
+			],
+			"name": "Custom Transform",
+			"generatedNodeName": "CustomTransform_node1747235115654",
+			"classification": "Transform",
+			"type": "CustomCode",
+			"code": "from awsglue.dynamicframe import DynamicFrameCollection, DynamicFrame\nfrom pyspark.sql.functions import regexp_replace, when, col\n\n       # Obtener el primer DynamicFrame de la colección\ndyf = dfc.select(list(dfc.keys())[0])\n\n# Convertir a Spark DataFrame\ndf = dyf.toDF()\n\n# Reemplazar \"_\" por espacio\ndf = df.withColumn(\"departamentos\", regexp_replace(\"departamentos\", \"_\", \" \"))\n\n# Cambiar SAN ANDRES ISLA por SAN ANDRÉS ISLA\ndf = df.withColumn(\n    \"departamentos\",\n    when(col(\"departamentos\") == \"SAN ANDRES ISLA\", \"SAN ANDRÉS ISLA\")\n    .otherwise(col(\"departamentos\"))\n)\n\n# Volver a DynamicFrame\ndyf = DynamicFrame.fromDF(df, glueContext, \"dyf\")\n\n# Devolver como colección\nreturn DynamicFrameCollection({\"CustomTransform\": dyf}, glueContext)\n",
+			"className": "MyTransform",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Poblacion de 1 año (meta programatica)",
+						"fullPath": [
+							"Poblacion de 1 año (meta programatica)"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "FA 1 AÑO (u DOSIS)",
+						"fullPath": [
+							"FA 1 AÑO (u DOSIS)"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "FA 1 AÑO (% DE COBERTURA)",
+						"fullPath": [
+							"FA 1 AÑO (% DE COBERTURA)"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "REGION",
+						"fullPath": [
+							"REGION"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Muertes",
+						"fullPath": [
+							"Muertes"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747230319952": {
+			"nodeId": "node-1747230319952",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747140898466"
+			],
+			"name": "Change Schema",
+			"generatedNodeName": "ChangeSchema_node1747230319952",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "codigo",
+					"fromPath": [
+						"codigo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_menor_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_menor_1_ano_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias___de_cobertura",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas___de_cobertura",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas___de_cobertura",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas___de_cobertura",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano___de_cobertura",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as___de_cobertura",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_1ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano___de_cobertura",
+					"fromPath": [
+						"penta_menor_de_un_ano___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_2das_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_2das_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano___de_cobertura1",
+					"fromPath": [
+						"penta_menor_de_un_ano___de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_3ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_3ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano___de_cobertura2",
+					"fromPath": [
+						"penta_menor_de_un_ano___de_cobertura2"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias___de_cobertura",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias___de_cobertura",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_1ra_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses___de_cobertura",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_2da_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses____de_cobertura",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses____de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias___de_cobertura",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_2da_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias___de_cobertura1",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias___de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_de_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_de_1_ano_meta_programatica"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano_udosis",
+					"fromPath": [
+						"srp_tv_de_un_ano_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano___de_cobertura",
+					"fromPath": [
+						"srp_tv_de_un_ano___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a_udosis",
+					"fromPath": [
+						"varicela_de_1_ano_1a_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a___de_cobertura",
+					"fromPath": [
+						"varicela_de_1_ano_1a___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano_udosis",
+					"fromPath": [
+						"ha_1_ano_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano___de_cobertura",
+					"fromPath": [
+						"ha_1_ano___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_udosis",
+					"fromPath": [
+						"fa_1_ano_udosis"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_de_cobertura",
+					"fromPath": [
+						"fa_1_ano___de_cobertura"
+					],
+					"toType": "float",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses_ref",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses___de_cobertura",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_1ra_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses___de_cobertura",
+					"fromPath": [
+						"neumo_de_12-23_meses___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_2da_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_24-_35_meses_dosis_unica",
+					"fromPath": [
+						"neumo_de_24-_35_meses_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis___de_cobertura",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis___de_cobertura",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_5_anos_meta_programatica",
+					"fromPath": [
+						"poblacion_5_anos_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos_2do_ref",
+					"fromPath": [
+						"vop_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos___de_cobertura",
+					"fromPath": [
+						"vop_5_anos___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos_2do_ref",
+					"fromPath": [
+						"dpt_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos___de_cobertura",
+					"fromPath": [
+						"dpt_5_anos___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos_dosis_ref",
+					"fromPath": [
+						"srp_tv_5_anos_dosis_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos___de_cobertura",
+					"fromPath": [
+						"srp_tv_5_anos___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_5_anos_u_dosis",
+					"fromPath": [
+						"varicela_de_5_anos_u_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_5_anos___de_cobertura",
+					"fromPath": [
+						"varicela_de_5_anos___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_18_a_40_anos_unica_unica",
+					"fromPath": [
+						"flu_de_18_a_40_anos_unica_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_41_a_59_anos_unica_unica",
+					"fromPath": [
+						"flu_de_41_a_59_anos_unica_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_mayor_que_de_60_anos_dane_30",
+					"fromPath": [
+						"poblacion_mayor_que_de_60_anos_dane_30"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_60_anos_y_mas_unica",
+					"fromPath": [
+						"flu_de_60_anos_y_mas_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_60_anos_y_mas__de_cobertura",
+					"fromPath": [
+						"flu_de_60_anos_y_mas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_gestantes_a_partir_de_la_semana_14_unica",
+					"fromPath": [
+						"flu_gestantes_a_partir_de_la_semana_14_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_gestantes_a_partir_de_la_semana_14___de_cobertura",
+					"fromPath": [
+						"flu_gestantes_a_partir_de_la_semana_14___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas__u_d_c__embarazo",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas__u_d_c__embarazo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_ninas_de_9_anos_pob_vph_ninas_de_9_anos",
+					"fromPath": [
+						"vph_ninas_de_9_anos_pob_vph_ninas_de_9_anos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_ninas_de_9_anos_vph_1a_dosis",
+					"fromPath": [
+						"vph_ninas_de_9_anos_vph_1a_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_ninas_de_9_anos__1a_dosis",
+					"fromPath": [
+						"vph_ninas_de_9_anos__1a_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_ninas_de_9_anos_vph_2a_dosis",
+					"fromPath": [
+						"vph_ninas_de_9_anos_vph_2a_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_ninas_de_9_anos___2da_dosis",
+					"fromPath": [
+						"vph_ninas_de_9_anos___2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "region",
+					"fromPath": [
+						"region"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747235865185": {
+			"nodeId": "node-1747235865185",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747234466547",
+				"node-1747235924801"
+			],
+			"name": "Join",
+			"generatedNodeName": "Join_node1747235865185",
+			"classification": "Transform",
+			"type": "Join",
+			"joinType": "equijoin",
+			"columns": [
+				{
+					"from": "node-1747234466547",
+					"keys": [
+						"Año",
+						"departamentos"
+					]
+				},
+				{
+					"from": "node-1747235924801",
+					"keys": [
+						"right_año",
+						"right_departamentos"
+					]
+				}
+			],
+			"columnConditions": [
+				"=",
+				"="
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747242547269": {
+			"nodeId": "node-1747242547269",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747241313846"
+			],
+			"name": "UUID",
+			"generatedNodeName": "UUID_node1747242547269",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"FT_id"
+					],
+					"isOptional": true,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_uuid",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_uuid.py",
+			"version": "1.0.0",
+			"transformName": "gs_uuid",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string"
+					},
+					{
+						"key": "poblacion_de_1_anio_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_anio_meta_programatica"
+						],
+						"type": "int"
+					},
+					{
+						"key": "fa_1_anio_u_dosis",
+						"fullPath": [
+							"fa_1_anio_u_dosis"
+						],
+						"type": "int"
+					},
+					{
+						"key": "fa_1_anio_porc_de_cobertura",
+						"fullPath": [
+							"fa_1_anio_porc_de_cobertura"
+						],
+						"type": "float"
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string"
+					},
+					{
+						"key": "anio",
+						"fullPath": [
+							"anio"
+						],
+						"type": "int"
+					},
+					{
+						"key": "muertes",
+						"fullPath": [
+							"muertes"
+						],
+						"type": "int"
+					},
+					{
+						"key": "DEPARTAMENTOS_Pais",
+						"fullPath": [
+							"DEPARTAMENTOS_Pais"
+						],
+						"type": "string"
+					},
+					{
+						"key": "FT_id",
+						"fullPath": [
+							"FT_id"
+						],
+						"type": "string"
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747238457396": {
+			"nodeId": "node-1747238457396",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747235115654"
+			],
+			"name": "Select From Collection",
+			"generatedNodeName": "SelectFromCollection_node1747238457396",
+			"classification": "Transform",
+			"type": "SelectFromCollection",
+			"index": 0,
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747105550523": {
+			"nodeId": "node-1747105550523",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "carga 2016",
+			"generatedNodeName": "carga2016_node1747105550523",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://proy-bucket-source2/2016_limpio.csv"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://proy-bucket-source2/2016_limpio.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "codigo",
+						"fullPath": [
+							"codigo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_menor_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_menor_1_ano_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_d_unica",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias__de_cobertura",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_1ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_2das_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_2das_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura1",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_3ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_3ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura2",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura2"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_1ra_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses___de_cobertura",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_2da_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses__de_cobertura",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias__de_cobertura",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_2da_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias__de_cobertura1",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano_udosis",
+						"fullPath": [
+							"srp_tv_de_un_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano__de_cobertura",
+						"fullPath": [
+							"srp_tv_de_un_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a_udosis",
+						"fullPath": [
+							"varicela_de_1_ano_1a_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a__de_cobertura",
+						"fullPath": [
+							"varicela_de_1_ano_1a__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano__de_cobertura",
+						"fullPath": [
+							"fa_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses_ref",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses__de_cobertura",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_1ra_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses__de_cobertura",
+						"fullPath": [
+							"neumo_de_12-23_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_2da_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_24-_35_meses_dosis_unica",
+						"fullPath": [
+							"neumo_de_24-_35_meses_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano_u_dosis",
+						"fullPath": [
+							"ha_1_ano_u_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano__de_cobertura",
+						"fullPath": [
+							"ha_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis__de_cobertura",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis__de_cobertura",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_5_anos_meta_programatica",
+						"fullPath": [
+							"poblacion_5_anos_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos_2do_ref",
+						"fullPath": [
+							"vop_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos__de_cobertura",
+						"fullPath": [
+							"vop_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos_2do_ref",
+						"fullPath": [
+							"dpt_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos__de_cobertura",
+						"fullPath": [
+							"dpt_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos_2do_ref",
+						"fullPath": [
+							"srp_tv_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos__de_cobertura",
+						"fullPath": [
+							"srp_tv_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_19_a_49_anos_unica_unica",
+						"fullPath": [
+							"flu_de_19_a_49_anos_unica_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_50_anos_y_mas_unica",
+						"fullPath": [
+							"flu_de_50_anos_y_mas_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "gestantes_a_partir_de_la_semana_14_unica",
+						"fullPath": [
+							"gestantes_a_partir_de_la_semana_14_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "total_dosis",
+						"fullPath": [
+							"total_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747242241773": {
+			"nodeId": "node-1747242241773",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747238457396"
+			],
+			"name": "Change Schema",
+			"generatedNodeName": "ChangeSchema_node1747242241773",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "Poblacion de 1 año (meta programatica)",
+					"fromPath": [
+						"Poblacion de 1 año (meta programatica)"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "FA 1 AÑO (u DOSIS)",
+					"fromPath": [
+						"FA 1 AÑO (u DOSIS)"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "FA 1 AÑO (% DE COBERTURA)",
+					"fromPath": [
+						"FA 1 AÑO (% DE COBERTURA)"
+					],
+					"toType": "int",
+					"fromType": "float",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "REGION",
+					"fromPath": [
+						"REGION"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "Año",
+					"fromPath": [
+						"Año"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "Muertes",
+					"fromPath": [
+						"Muertes"
+					],
+					"toType": "string",
+					"fromType": "int",
+					"dropped": true,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747242539286": {
+			"nodeId": "node-1747242539286",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747259623943"
+			],
+			"name": "UUID",
+			"generatedNodeName": "UUID_node1747242539286",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"Departamento_ID"
+					],
+					"isOptional": true,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_uuid",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_uuid.py",
+			"version": "1.0.0",
+			"transformName": "gs_uuid",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "REGION",
+						"fullPath": [
+							"REGION"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Departamento_ID",
+						"fullPath": [
+							"Departamento_ID"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747243861956": {
+			"nodeId": "node-1747243861956",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747241997112"
+			],
+			"name": "Amazon Redshift",
+			"generatedNodeName": "AmazonRedshift_node1747243861956",
+			"classification": "DataSink",
+			"type": "AmazonRedshift",
+			"streamingBatchInterval": 100,
+			"data": {
+				"accessType": "connection",
+				"sourceType": "table",
+				"connection": {
+					"value": "Redshift connection",
+					"label": "Redshift connection",
+					"description": "No description available. Version: 2"
+				},
+				"schema": {
+					"value": "public",
+					"label": "public",
+					"description": null
+				},
+				"catalogDatabase": null,
+				"catalogRedshiftTable": null,
+				"catalogRedshiftSchema": null,
+				"table": {
+					"value": "dim_muertes",
+					"label": "dim_muertes",
+					"description": null
+				},
+				"catalogTable": null,
+				"tempDir": "s3://aws-glue-assets-879822987177-us-east-1/temporary/",
+				"iamRole": null,
+				"sampleQuery": null,
+				"preAction": null,
+				"postAction": null,
+				"action": "drop",
+				"tableSchema": [
+					{
+						"value": "departamentos",
+						"label": "departamentos",
+						"description": "VARCHAR"
+					},
+					{
+						"value": "muertes",
+						"label": "muertes",
+						"description": "INTEGER"
+					},
+					{
+						"value": "anio",
+						"label": "anio",
+						"description": "INTEGER"
+					},
+					{
+						"value": "muertes_id",
+						"label": "muertes_id",
+						"description": "VARCHAR"
+					}
+				],
+				"selectedColumns": [],
+				"crawlerConnection": null,
+				"tablePrefix": null,
+				"upsert": false,
+				"mergeAction": "simple",
+				"mergeWhenMatched": "update",
+				"mergeWhenNotMatched": "insert",
+				"mergeClause": null,
+				"stagingTable": "public.dim_muertes_temp_81ww8g",
+				"advancedOptions": []
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747235741034": {
+			"nodeId": "node-1747235741034",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "carga muertes",
+			"generatedNodeName": "cargamuertes_node1747235741034",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://proy-bucket-source2/MUERTES_CVS.csv"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://proy-bucket-source2/MUERTES_CVS.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "muertes",
+						"fullPath": [
+							"muertes"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "año",
+						"fullPath": [
+							"año"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747141544009": {
+			"nodeId": "node-1747141544009",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747140942291"
+			],
+			"name": "agregar anio",
+			"generatedNodeName": "agregaranio_node1747141544009",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"Año"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "expr",
+					"value": [
+						"2016"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_derived",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_derived.py",
+			"version": "1.0.0",
+			"transformName": "gs_derived",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano__de_cobertura",
+						"fullPath": [
+							"fa_1_ano__de_cobertura"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747236002297": {
+			"nodeId": "node-1747236002297",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747235865185"
+			],
+			"name": "Change Schema",
+			"generatedNodeName": "ChangeSchema_node1747236002297",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "DEPARTAMENTOS",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "Poblacion de 1 año (meta programatica)",
+					"fromPath": [
+						"poblacion_de_1_ano_meta_programatica"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "FA 1 AÑO (u DOSIS)",
+					"fromPath": [
+						"fa_1_ano_udosis"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "FA 1 AÑO (% DE COBERTURA)",
+					"fromPath": [
+						"fa_1_ano_de_cobertura"
+					],
+					"toType": "float",
+					"fromType": "float",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "REGION",
+					"fromPath": [
+						"region"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "Año",
+					"fromPath": [
+						"Año"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "right_departamentos",
+					"fromPath": [
+						"right_departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "Muertes",
+					"fromPath": [
+						"right_muertes"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "right_año",
+					"fromPath": [
+						"right_año"
+					],
+					"toType": "string",
+					"fromType": "int",
+					"dropped": true,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747105411786": {
+			"nodeId": "node-1747105411786",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747106253914"
+			],
+			"name": "Amazon Redshift",
+			"generatedNodeName": "AmazonRedshift_node1747105411786",
+			"classification": "DataSink",
+			"type": "AmazonRedshift",
+			"streamingBatchInterval": 100,
+			"data": {
+				"accessType": "connection",
+				"sourceType": "table",
+				"connection": {
+					"value": "Redshift connection",
+					"label": "Redshift connection",
+					"description": "No description available. Version: 2"
+				},
+				"schema": {
+					"value": "public",
+					"label": "public",
+					"description": null
+				},
+				"catalogDatabase": null,
+				"catalogRedshiftTable": null,
+				"catalogRedshiftSchema": null,
+				"table": {
+					"value": "dim_fecha2",
+					"label": "dim_fecha2",
+					"description": null
+				},
+				"catalogTable": null,
+				"tempDir": "s3://aws-glue-assets-879822987177-us-east-1/temporary/",
+				"iamRole": null,
+				"sampleQuery": null,
+				"preAction": null,
+				"postAction": null,
+				"action": "drop",
+				"tableSchema": [
+					{
+						"value": "anio",
+						"label": "anio",
+						"description": "INTEGER"
+					},
+					{
+						"value": "idFecha",
+						"label": "idFecha",
+						"description": "VARCHAR"
+					}
+				],
+				"selectedColumns": [],
+				"crawlerConnection": null,
+				"tablePrefix": null,
+				"upsert": false,
+				"mergeAction": "simple",
+				"mergeWhenMatched": "update",
+				"mergeWhenNotMatched": "insert",
+				"mergeClause": null,
+				"stagingTable": "public.dim_fecha2_temp_q0viba",
+				"advancedOptions": []
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747140942291": {
+			"nodeId": "node-1747140942291",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747105550523"
+			],
+			"name": "seleccionar columnas",
+			"generatedNodeName": "seleccionarcolumnas_node1747140942291",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "codigo",
+					"fromPath": [
+						"codigo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_menor_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_menor_1_ano_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_d_unica",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias__de_cobertura",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_1ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_2das_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_2das_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura1",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_3ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_3ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura2",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura2"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_1ra_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses___de_cobertura",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_2da_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses__de_cobertura",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias__de_cobertura",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_2da_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias__de_cobertura1",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_de_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_de_1_ano_meta_programatica"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano_udosis",
+					"fromPath": [
+						"srp_tv_de_un_ano_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano__de_cobertura",
+					"fromPath": [
+						"srp_tv_de_un_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a_udosis",
+					"fromPath": [
+						"varicela_de_1_ano_1a_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a__de_cobertura",
+					"fromPath": [
+						"varicela_de_1_ano_1a__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_udosis",
+					"fromPath": [
+						"fa_1_ano_udosis"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_de_cobertura",
+					"fromPath": [
+						"fa_1_ano__de_cobertura"
+					],
+					"toType": "float",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses_ref",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses__de_cobertura",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_1ra_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses__de_cobertura",
+					"fromPath": [
+						"neumo_de_12-23_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_2da_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_24-_35_meses_dosis_unica",
+					"fromPath": [
+						"neumo_de_24-_35_meses_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano_u_dosis",
+					"fromPath": [
+						"ha_1_ano_u_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano__de_cobertura",
+					"fromPath": [
+						"ha_1_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis__de_cobertura",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis__de_cobertura",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_5_anos_meta_programatica",
+					"fromPath": [
+						"poblacion_5_anos_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos_2do_ref",
+					"fromPath": [
+						"vop_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos__de_cobertura",
+					"fromPath": [
+						"vop_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos_2do_ref",
+					"fromPath": [
+						"dpt_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos__de_cobertura",
+					"fromPath": [
+						"dpt_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos_2do_ref",
+					"fromPath": [
+						"srp_tv_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos__de_cobertura",
+					"fromPath": [
+						"srp_tv_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_19_a_49_anos_unica_unica",
+					"fromPath": [
+						"flu_de_19_a_49_anos_unica_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_50_anos_y_mas_unica",
+					"fromPath": [
+						"flu_de_50_anos_y_mas_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "gestantes_a_partir_de_la_semana_14_unica",
+					"fromPath": [
+						"gestantes_a_partir_de_la_semana_14_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "region",
+					"fromPath": [
+						"region"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "total_dosis",
+					"fromPath": [
+						"total_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747142345434": {
+			"nodeId": "node-1747142345434",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747140882553"
+			],
+			"name": "seleccionar columnas",
+			"generatedNodeName": "seleccionarcolumnas_node1747142345434",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "unnamed_0",
+					"fromPath": [
+						"unnamed_0"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "codigo",
+					"fromPath": [
+						"codigo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_menor_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_menor_1_ano_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_1ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_2das_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_2das_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura1",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_3ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_3ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura2",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura2"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_1ra_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses__de_cobertura",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_2da_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses__de_cobertura1",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias__de_cobertura",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_2da_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias__de_cobertura1",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_de_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_de_1_ano_meta_programatica_"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano_udosis",
+					"fromPath": [
+						"srp_tv_de_un_ano_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano__de_cobertura",
+					"fromPath": [
+						"srp_tv_de_un_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a_udosis",
+					"fromPath": [
+						"varicela_de_1_ano_1a_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a__de_cobertura",
+					"fromPath": [
+						"varicela_de_1_ano_1a__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_udosis",
+					"fromPath": [
+						"fa_1_ano_udosis"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_de_cobertura",
+					"fromPath": [
+						"fa_1_ano__de_cobertura"
+					],
+					"toType": "float",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses_ref",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses__de_cobertura",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_1ra_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses__de_cobertura",
+					"fromPath": [
+						"neumo_de_12-23_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_2da_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_24-_35_meses_dosis_unica",
+					"fromPath": [
+						"neumo_de_24-_35_meses_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano_u_dosis",
+					"fromPath": [
+						"ha_1_ano_u_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano__de_cobertura",
+					"fromPath": [
+						"ha_1_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis__de_cobertura",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis__de_cobertura",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_5_anos_meta_programatica",
+					"fromPath": [
+						"poblacion_5_anos_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos_2do_ref",
+					"fromPath": [
+						"vop_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos__de_cobertura",
+					"fromPath": [
+						"vop_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos_2do_ref",
+					"fromPath": [
+						"dpt_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos__de_cobertura",
+					"fromPath": [
+						"dpt_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos_ref",
+					"fromPath": [
+						"srp_tv_5_anos_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos__de_cobertura",
+					"fromPath": [
+						"srp_tv_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_19_a_49_anos_unica_unica",
+					"fromPath": [
+						"flu_de_19_a_49_anos_unica_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_50_anos_y_mas_unica",
+					"fromPath": [
+						"flu_de_50_anos_y_mas_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "gestantes_a_partir_de_la_semana_14_unica",
+					"fromPath": [
+						"gestantes_a_partir_de_la_semana_14_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_pob_vph_ninas_de_9_anos",
+					"fromPath": [
+						"vph_pob_vph_ninas_de_9_anos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_1a",
+					"fromPath": [
+						"vph_1a"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph__de_cobertura",
+					"fromPath": [
+						"vph__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_2a",
+					"fromPath": [
+						"vph_2a"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "region",
+					"fromPath": [
+						"region"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747234250963": {
+			"nodeId": "node-1747234250963",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747142244018",
+				"node-1747141544009"
+			],
+			"name": "Union",
+			"generatedNodeName": "Union_node1747234250963",
+			"classification": "Transform",
+			"type": "Union",
+			"parentsValid": true,
+			"calculatedType": "",
+			"sources": [
+				"node-1747142244018",
+				"node-1747141544009"
+			],
+			"unionType": "ALL",
+			"codeGenVersion": 2,
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string"
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "int"
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "int"
+					},
+					{
+						"key": "fa_1_ano_de_cobertura",
+						"fullPath": [
+							"fa_1_ano_de_cobertura"
+						],
+						"type": "float"
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string"
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int"
+					}
+				]
+			]
+		},
+		"node-1747108136975": {
+			"nodeId": "node-1747108136975",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "carga 2017",
+			"generatedNodeName": "carga2017_node1747108136975",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://proy-bucket-source2/2017_limpio.csv"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://proy-bucket-source2/2017_limpio.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "codigo",
+						"fullPath": [
+							"codigo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_menor_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_menor_1_ano_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_1ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_2das_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_2das_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura1",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_3ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_3ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura2",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura2"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_1ra_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses__de_cobertura",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_2da_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses__de_cobertura1",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias__de_cobertura",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_2da_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias__de_cobertura1",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica_",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica_"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano_udosis",
+						"fullPath": [
+							"srp_tv_de_un_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano__de_cobertura",
+						"fullPath": [
+							"srp_tv_de_un_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a_udosis",
+						"fullPath": [
+							"varicela_de_1_ano_1a_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a__de_cobertura",
+						"fullPath": [
+							"varicela_de_1_ano_1a__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano__de_cobertura",
+						"fullPath": [
+							"fa_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses_ref",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses__de_cobertura",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_1ra_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses__de_cobertura",
+						"fullPath": [
+							"neumo_de_12-23_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_2da_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_24-_35_meses_dosis_unica",
+						"fullPath": [
+							"neumo_de_24-_35_meses_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano_u_dosis",
+						"fullPath": [
+							"ha_1_ano_u_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano__de_cobertura",
+						"fullPath": [
+							"ha_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis__de_cobertura",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis__de_cobertura",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_5_anos_meta_programatica",
+						"fullPath": [
+							"poblacion_5_anos_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos_2do_ref",
+						"fullPath": [
+							"vop_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos__de_cobertura",
+						"fullPath": [
+							"vop_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos_2do_ref",
+						"fullPath": [
+							"dpt_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos__de_cobertura",
+						"fullPath": [
+							"dpt_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos_ref",
+						"fullPath": [
+							"srp_tv_5_anos_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos__de_cobertura",
+						"fullPath": [
+							"srp_tv_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_19_a_49_anos_unica_unica",
+						"fullPath": [
+							"flu_de_19_a_49_anos_unica_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_50_anos_y_mas_unica",
+						"fullPath": [
+							"flu_de_50_anos_y_mas_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "gestantes_a_partir_de_la_semana_14_unica",
+						"fullPath": [
+							"gestantes_a_partir_de_la_semana_14_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_1a",
+						"fullPath": [
+							"vph_1a"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_2a",
+						"fullPath": [
+							"vph_2a"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_3a",
+						"fullPath": [
+							"vph_3a"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747234466547": {
+			"nodeId": "node-1747234466547",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747234250963",
+				"node-1747234320875"
+			],
+			"name": "Union",
+			"generatedNodeName": "Union_node1747234466547",
+			"classification": "Transform",
+			"type": "Union",
+			"parentsValid": true,
+			"calculatedType": "",
+			"sources": [
+				"node-1747234250963",
+				"node-1747234320875"
+			],
+			"unionType": "ALL",
+			"codeGenVersion": 2
+		},
+		"node-1747241897023": {
+			"nodeId": "node-1747241897023",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747235741034"
+			],
+			"name": "Change Schema",
+			"generatedNodeName": "ChangeSchema_node1747241897023",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "muertes",
+					"fromPath": [
+						"muertes"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "anio",
+					"fromPath": [
+						"año"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747140882553": {
+			"nodeId": "node-1747140882553",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "carga 2018",
+			"generatedNodeName": "carga2018_node1747140882553",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://proy-bucket-source2/2018_limpio.csv"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://proy-bucket-source2/2018_limpio.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "unnamed_0",
+						"fullPath": [
+							"unnamed_0"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "codigo",
+						"fullPath": [
+							"codigo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_menor_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_menor_1_ano_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_1ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_2das_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_2das_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura1",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_3ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_3ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano__de_cobertura2",
+						"fullPath": [
+							"penta_menor_de_un_ano__de_cobertura2"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_1ra_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses__de_cobertura",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_2da_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses__de_cobertura1",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias__de_cobertura",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_2da_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias__de_cobertura1",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias__de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica_",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica_"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano_udosis",
+						"fullPath": [
+							"srp_tv_de_un_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano__de_cobertura",
+						"fullPath": [
+							"srp_tv_de_un_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a_udosis",
+						"fullPath": [
+							"varicela_de_1_ano_1a_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a__de_cobertura",
+						"fullPath": [
+							"varicela_de_1_ano_1a__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano__de_cobertura",
+						"fullPath": [
+							"fa_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses_ref",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses__de_cobertura",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_1ra_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses__de_cobertura",
+						"fullPath": [
+							"neumo_de_12-23_meses__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_2da_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_24-_35_meses_dosis_unica",
+						"fullPath": [
+							"neumo_de_24-_35_meses_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano_u_dosis",
+						"fullPath": [
+							"ha_1_ano_u_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano__de_cobertura",
+						"fullPath": [
+							"ha_1_ano__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis__de_cobertura",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis__de_cobertura",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_5_anos_meta_programatica",
+						"fullPath": [
+							"poblacion_5_anos_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos_2do_ref",
+						"fullPath": [
+							"vop_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos__de_cobertura",
+						"fullPath": [
+							"vop_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos_2do_ref",
+						"fullPath": [
+							"dpt_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos__de_cobertura",
+						"fullPath": [
+							"dpt_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos_ref",
+						"fullPath": [
+							"srp_tv_5_anos_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos__de_cobertura",
+						"fullPath": [
+							"srp_tv_5_anos__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_19_a_49_anos_unica_unica",
+						"fullPath": [
+							"flu_de_19_a_49_anos_unica_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_50_anos_y_mas_unica",
+						"fullPath": [
+							"flu_de_50_anos_y_mas_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "gestantes_a_partir_de_la_semana_14_unica",
+						"fullPath": [
+							"gestantes_a_partir_de_la_semana_14_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_pob_vph_ninas_de_9_anos",
+						"fullPath": [
+							"vph_pob_vph_ninas_de_9_anos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_1a",
+						"fullPath": [
+							"vph_1a"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph__de_cobertura",
+						"fullPath": [
+							"vph__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_2a",
+						"fullPath": [
+							"vph_2a"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747079229382": {
+			"nodeId": "node-1747079229382",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "carga anios",
+			"generatedNodeName": "cargaanios_node1747079229382",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://proy-bucket-source2/anios.csv"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://proy-bucket-source2/anios.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "anio",
+						"fullPath": [
+							"anio"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "col1",
+						"fullPath": [
+							"col1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747142244018": {
+			"nodeId": "node-1747142244018",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747141675562"
+			],
+			"name": "agregar anio",
+			"generatedNodeName": "agregaranio_node1747142244018",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"Año"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "expr",
+					"value": [
+						"2017"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_derived",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_derived.py",
+			"version": "1.0.0",
+			"transformName": "gs_derived",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano__de_cobertura",
+						"fullPath": [
+							"fa_1_ano__de_cobertura"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747243365317": {
+			"nodeId": "node-1747243365317",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747242547269"
+			],
+			"name": "Amazon Redshift",
+			"generatedNodeName": "AmazonRedshift_node1747243365317",
+			"classification": "DataSink",
+			"type": "AmazonRedshift",
+			"streamingBatchInterval": 100,
+			"data": {
+				"accessType": "connection",
+				"sourceType": "table",
+				"connection": {
+					"value": "Redshift connection",
+					"label": "Redshift connection",
+					"description": "No description available. Version: 2"
+				},
+				"schema": {
+					"value": "public",
+					"label": "public",
+					"description": null
+				},
+				"catalogDatabase": null,
+				"catalogRedshiftTable": null,
+				"catalogRedshiftSchema": null,
+				"table": {
+					"value": "ft_vacunas",
+					"label": "ft_vacunas",
+					"description": null
+				},
+				"catalogTable": null,
+				"tempDir": "s3://aws-glue-assets-879822987177-us-east-1/temporary/",
+				"iamRole": null,
+				"sampleQuery": null,
+				"preAction": null,
+				"postAction": null,
+				"action": "drop",
+				"tableSchema": [
+					{
+						"value": "departamentos",
+						"label": "departamentos",
+						"description": "VARCHAR"
+					},
+					{
+						"value": "poblacion_de_1_anio_meta_programatica",
+						"label": "poblacion_de_1_anio_meta_programatica",
+						"description": "INTEGER"
+					},
+					{
+						"value": "fa_1_anio_u_dosis",
+						"label": "fa_1_anio_u_dosis",
+						"description": "INTEGER"
+					},
+					{
+						"value": "fa_1_anio_porc_de_cobertura",
+						"label": "fa_1_anio_porc_de_cobertura",
+						"description": "REAL"
+					},
+					{
+						"value": "region",
+						"label": "region",
+						"description": "VARCHAR"
+					},
+					{
+						"value": "anio",
+						"label": "anio",
+						"description": "INTEGER"
+					},
+					{
+						"value": "muertes",
+						"label": "muertes",
+						"description": "INTEGER"
+					},
+					{
+						"value": "DEPARTAMENTOS_Pais",
+						"label": "DEPARTAMENTOS_Pais",
+						"description": "VARCHAR"
+					},
+					{
+						"value": "FT_id",
+						"label": "FT_id",
+						"description": "VARCHAR"
+					}
+				],
+				"selectedColumns": [],
+				"crawlerConnection": null,
+				"tablePrefix": null,
+				"upsert": false,
+				"mergeAction": "simple",
+				"mergeWhenMatched": "update",
+				"mergeWhenNotMatched": "insert",
+				"mergeClause": null,
+				"stagingTable": "public.ft_vacunas_temp_lntxu2",
+				"advancedOptions": []
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747234320875": {
+			"nodeId": "node-1747234320875",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747230271728",
+				"node-1747233441981"
+			],
+			"name": "Union",
+			"generatedNodeName": "Union_node1747234320875",
+			"classification": "Transform",
+			"type": "Union",
+			"parentsValid": true,
+			"calculatedType": "",
+			"sources": [
+				"node-1747230271728",
+				"node-1747233441981"
+			],
+			"unionType": "ALL",
+			"codeGenVersion": 2,
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string"
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "int"
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "int"
+					},
+					{
+						"key": "fa_1_ano_de_cobertura",
+						"fullPath": [
+							"fa_1_ano_de_cobertura"
+						],
+						"type": "float"
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string"
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int"
+					}
+				]
+			]
+		},
+		"node-1747241997112": {
+			"nodeId": "node-1747241997112",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747241897023"
+			],
+			"name": "UUID",
+			"generatedNodeName": "UUID_node1747241997112",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"muertes_id"
+					],
+					"isOptional": true,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_uuid",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_uuid.py",
+			"version": "1.0.0",
+			"transformName": "gs_uuid",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "muertes",
+						"fullPath": [
+							"muertes"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "anio",
+						"fullPath": [
+							"anio"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "muertes_id",
+						"fullPath": [
+							"muertes_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747258095320": {
+			"nodeId": "node-1747258095320",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747242539286"
+			],
+			"name": "Amazon Redshift",
+			"generatedNodeName": "AmazonRedshift_node1747258095320",
+			"classification": "DataSink",
+			"type": "AmazonRedshift",
+			"streamingBatchInterval": 100,
+			"data": {
+				"accessType": "connection",
+				"sourceType": "table",
+				"connection": {
+					"value": "Redshift connection",
+					"label": "Redshift connection",
+					"description": "No description available. Version: 2"
+				},
+				"schema": {
+					"value": "public",
+					"label": "public",
+					"description": null
+				},
+				"catalogDatabase": null,
+				"catalogRedshiftTable": null,
+				"catalogRedshiftSchema": null,
+				"table": {
+					"value": "dim_departamentos",
+					"label": "dim_departamentos",
+					"description": null
+				},
+				"catalogTable": null,
+				"tempDir": "s3://aws-glue-assets-879822987177-us-east-1/temporary/",
+				"iamRole": null,
+				"sampleQuery": null,
+				"preAction": null,
+				"postAction": null,
+				"action": "drop",
+				"tableSchema": [
+					{
+						"value": "departamentos",
+						"label": "departamentos",
+						"description": "VARCHAR"
+					},
+					{
+						"value": "REGION",
+						"label": "REGION",
+						"description": "VARCHAR"
+					},
+					{
+						"value": "Departamento_ID",
+						"label": "Departamento_ID",
+						"description": "VARCHAR"
+					}
+				],
+				"selectedColumns": [],
+				"crawlerConnection": null,
+				"tablePrefix": null,
+				"upsert": false,
+				"mergeAction": "simple",
+				"mergeWhenMatched": "update",
+				"mergeWhenNotMatched": "insert",
+				"mergeClause": null,
+				"stagingTable": "public.dim_departamentos_temp_09vome",
+				"advancedOptions": []
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747140898466": {
+			"nodeId": "node-1747140898466",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "carga 2019",
+			"generatedNodeName": "carga2019_node1747140898466",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://proy-bucket-source2/2019_limpio.csv"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://proy-bucket-source2/2019_limpio.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "codigo",
+						"fullPath": [
+							"codigo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_menor_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_menor_1_ano_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias___de_cobertura",
+						"fullPath": [
+							"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas___de_cobertura",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas___de_cobertura",
+						"fullPath": [
+							"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas___de_cobertura",
+						"fullPath": [
+							"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano___de_cobertura",
+						"fullPath": [
+							"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_menor_quede1_ano__vip_menor_que1ano_3as___de_cobertura",
+						"fullPath": [
+							"vop_menor_quede1_ano__vip_menor_que1ano_3as___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_1ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_1ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano___de_cobertura",
+						"fullPath": [
+							"penta_menor_de_un_ano___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_2das_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_2das_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano___de_cobertura1",
+						"fullPath": [
+							"penta_menor_de_un_ano___de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano_3ras_dosis",
+						"fullPath": [
+							"penta_menor_de_un_ano_3ras_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "penta_menor_de_un_ano___de_cobertura2",
+						"fullPath": [
+							"penta_menor_de_un_ano___de_cobertura2"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_2_a_3_meses_y_21_dias___de_cobertura",
+						"fullPath": [
+							"rotavirus_de_2_a_3_meses_y_21_dias___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rotavirus_de_4_a_11_meses_y_29_dias___de_cobertura",
+						"fullPath": [
+							"rotavirus_de_4_a_11_meses_y_29_dias___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_1ra_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses___de_cobertura",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses_2da_dosis",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_6_meses_a_11_meses____de_cobertura",
+						"fullPath": [
+							"flu_de_6_meses_a_11_meses____de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias___de_cobertura",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias_2da_dosis",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_2_a_11_meses_29_dias___de_cobertura1",
+						"fullPath": [
+							"neumo_2_a_11_meses_29_dias___de_cobertura1"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano_udosis",
+						"fullPath": [
+							"srp_tv_de_un_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_de_un_ano___de_cobertura",
+						"fullPath": [
+							"srp_tv_de_un_ano___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a_udosis",
+						"fullPath": [
+							"varicela_de_1_ano_1a_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_1_ano_1a___de_cobertura",
+						"fullPath": [
+							"varicela_de_1_ano_1a___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano_udosis",
+						"fullPath": [
+							"ha_1_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "ha_1_ano___de_cobertura",
+						"fullPath": [
+							"ha_1_ano___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano___de_cobertura",
+						"fullPath": [
+							"fa_1_ano___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses_ref",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12_meses_a_23_meses___de_cobertura",
+						"fullPath": [
+							"neumo_de_12_meses_a_23_meses___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_1ra_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_1ra_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses___de_cobertura",
+						"fullPath": [
+							"neumo_de_12-23_meses___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_12-23_meses_2da_dosis",
+						"fullPath": [
+							"neumo_de_12-23_meses_2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "neumo_de_24-_35_meses_dosis_unica",
+						"fullPath": [
+							"neumo_de_24-_35_meses_dosis_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_al_ano_de_la_3ra_dosis___de_cobertura",
+						"fullPath": [
+							"vop_al_ano_de_la_3ra_dosis___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_al_ano_de_la_3ra_dosis___de_cobertura",
+						"fullPath": [
+							"dpt_al_ano_de_la_3ra_dosis___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_5_anos_meta_programatica",
+						"fullPath": [
+							"poblacion_5_anos_meta_programatica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos_2do_ref",
+						"fullPath": [
+							"vop_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vop_5_anos___de_cobertura",
+						"fullPath": [
+							"vop_5_anos___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos_2do_ref",
+						"fullPath": [
+							"dpt_5_anos_2do_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "dpt_5_anos___de_cobertura",
+						"fullPath": [
+							"dpt_5_anos___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos_dosis_ref",
+						"fullPath": [
+							"srp_tv_5_anos_dosis_ref"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "srp_tv_5_anos___de_cobertura",
+						"fullPath": [
+							"srp_tv_5_anos___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_5_anos_u_dosis",
+						"fullPath": [
+							"varicela_de_5_anos_u_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "varicela_de_5_anos___de_cobertura",
+						"fullPath": [
+							"varicela_de_5_anos___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_18_a_40_anos_unica_unica",
+						"fullPath": [
+							"flu_de_18_a_40_anos_unica_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_41_a_59_anos_unica_unica",
+						"fullPath": [
+							"flu_de_41_a_59_anos_unica_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_mayor_que_de_60_anos_dane_30",
+						"fullPath": [
+							"poblacion_mayor_que_de_60_anos_dane_30"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_60_anos_y_mas_unica",
+						"fullPath": [
+							"flu_de_60_anos_y_mas_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_de_60_anos_y_mas__de_cobertura",
+						"fullPath": [
+							"flu_de_60_anos_y_mas__de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_gestantes_a_partir_de_la_semana_14_unica",
+						"fullPath": [
+							"flu_gestantes_a_partir_de_la_semana_14_unica"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "flu_gestantes_a_partir_de_la_semana_14___de_cobertura",
+						"fullPath": [
+							"flu_gestantes_a_partir_de_la_semana_14___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas__u_d_c__embarazo",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas__u_d_c__embarazo"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+						"fullPath": [
+							"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_ninas_de_9_anos_pob_vph_ninas_de_9_anos",
+						"fullPath": [
+							"vph_ninas_de_9_anos_pob_vph_ninas_de_9_anos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_ninas_de_9_anos_vph_1a_dosis",
+						"fullPath": [
+							"vph_ninas_de_9_anos_vph_1a_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_ninas_de_9_anos__1a_dosis",
+						"fullPath": [
+							"vph_ninas_de_9_anos__1a_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_ninas_de_9_anos_vph_2a_dosis",
+						"fullPath": [
+							"vph_ninas_de_9_anos_vph_2a_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "vph_ninas_de_9_anos___2da_dosis",
+						"fullPath": [
+							"vph_ninas_de_9_anos___2da_dosis"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747141675562": {
+			"nodeId": "node-1747141675562",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747108136975"
+			],
+			"name": "seleccionar columnas",
+			"generatedNodeName": "seleccionarcolumnas_node1747141675562",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "codigo",
+					"fromPath": [
+						"codigo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_menor_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_menor_1_ano_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura",
+					"fromPath": [
+						"bcg_recien_nacido_hasta_29_dias__menor_un_ano_a_partir_de_30_dias_hasta_11_meses_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_primeras_12_horas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura",
+					"fromPath": [
+						"hepatitis_b_recien_nacido_hasta_29_dias_recien_nacido_despues_de_las_primeras_12_horas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas_d_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura",
+					"fromPath": [
+						"hb_recien_nacido_hasta_29_dias_primeras_12_horas_despues_de_las_primeras_12_horas__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteralmenor_que__de_1_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura",
+					"fromPath": [
+						"antipolio_inactivada_vip_parenteral_menor_que__de_1_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as_3dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura",
+					"fromPath": [
+						"vop_menor_quede1_ano__vip_menor_que1ano_3as__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_1ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_1ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_2das_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_2das_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura1",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano_3ras_dosis",
+					"fromPath": [
+						"penta_menor_de_un_ano_3ras_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "penta_menor_de_un_ano__de_cobertura2",
+					"fromPath": [
+						"penta_menor_de_un_ano__de_cobertura2"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura",
+					"fromPath": [
+						"rotavirus_de_2_a_3_meses_y_21_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura",
+					"fromPath": [
+						"rotavirus_de_4_a_11_meses_y_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_1ra_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses__de_cobertura",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses_2da_dosis",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_6_meses_a_11_meses__de_cobertura1",
+					"fromPath": [
+						"flu_de_6_meses_a_11_meses__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_1ra_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias__de_cobertura",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias_2da_dosis",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_2_a_11_meses_29_dias__de_cobertura1",
+					"fromPath": [
+						"neumo_2_a_11_meses_29_dias__de_cobertura1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_de_1_ano_meta_programatica",
+					"fromPath": [
+						"poblacion_de_1_ano_meta_programatica_"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano_udosis",
+					"fromPath": [
+						"srp_tv_de_un_ano_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_de_un_ano__de_cobertura",
+					"fromPath": [
+						"srp_tv_de_un_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a_udosis",
+					"fromPath": [
+						"varicela_de_1_ano_1a_udosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "varicela_de_1_ano_1a__de_cobertura",
+					"fromPath": [
+						"varicela_de_1_ano_1a__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_udosis",
+					"fromPath": [
+						"fa_1_ano_udosis"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_ano_de_cobertura",
+					"fromPath": [
+						"fa_1_ano__de_cobertura"
+					],
+					"toType": "float",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses_ref",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12_meses_a_23_meses__de_cobertura",
+					"fromPath": [
+						"neumo_de_12_meses_a_23_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_1ra_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_1ra_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses__de_cobertura",
+					"fromPath": [
+						"neumo_de_12-23_meses__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_12-23_meses_2da_dosis",
+					"fromPath": [
+						"neumo_de_12-23_meses_2da_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "neumo_de_24-_35_meses_dosis_unica",
+					"fromPath": [
+						"neumo_de_24-_35_meses_dosis_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano_u_dosis",
+					"fromPath": [
+						"ha_1_ano_u_dosis"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "ha_1_ano__de_cobertura",
+					"fromPath": [
+						"ha_1_ano__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_al_ano_de_la_3ra_dosis__de_cobertura",
+					"fromPath": [
+						"vop_al_ano_de_la_3ra_dosis__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis_1er_ref",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis_1er_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_al_ano_de_la_3ra_dosis__de_cobertura",
+					"fromPath": [
+						"dpt_al_ano_de_la_3ra_dosis__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_5_anos_meta_programatica",
+					"fromPath": [
+						"poblacion_5_anos_meta_programatica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos_2do_ref",
+					"fromPath": [
+						"vop_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vop_5_anos__de_cobertura",
+					"fromPath": [
+						"vop_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos_2do_ref",
+					"fromPath": [
+						"dpt_5_anos_2do_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "dpt_5_anos__de_cobertura",
+					"fromPath": [
+						"dpt_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos_ref",
+					"fromPath": [
+						"srp_tv_5_anos_ref"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "srp_tv_5_anos__de_cobertura",
+					"fromPath": [
+						"srp_tv_5_anos__de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_19_a_49_anos_unica_unica",
+					"fromPath": [
+						"flu_de_19_a_49_anos_unica_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "flu_de_50_anos_y_mas_unica",
+					"fromPath": [
+						"flu_de_50_anos_y_mas_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "gestantes_a_partir_de_la_semana_14_unica",
+					"fromPath": [
+						"gestantes_a_partir_de_la_semana_14_unica"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas_unica_dosis_en_cada_embarazo"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura",
+					"fromPath": [
+						"tdap_acelular_gestantes_de_10_anos_y_mas___de_cobertura"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_1a",
+					"fromPath": [
+						"vph_1a"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_2a",
+					"fromPath": [
+						"vph_2a"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "vph_3a",
+					"fromPath": [
+						"vph_3a"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				},
+				{
+					"toKey": "region",
+					"fromPath": [
+						"region"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747234615474": {
+			"nodeId": "node-1747234615474",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747236002297"
+			],
+			"name": "Quitar totales",
+			"generatedNodeName": "Quitartotales_node1747234615474",
+			"classification": "Transform",
+			"type": "SqlCode",
+			"sqlAliases": [
+				{
+					"from": "node-1747236002297",
+					"alias": "myDataSource"
+				}
+			],
+			"outputSchemas": [
+				[
+					{
+						"key": "DEPARTAMENTOS",
+						"fullPath": [
+							"DEPARTAMENTOS"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Poblacion de 1 año (meta programatica)",
+						"fullPath": [
+							"Poblacion de 1 año (meta programatica)"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "FA 1 AÑO (u DOSIS)",
+						"fullPath": [
+							"FA 1 AÑO (u DOSIS)"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "FA 1 AÑO (% DE COBERTURA)",
+						"fullPath": [
+							"FA 1 AÑO (% DE COBERTURA)"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "REGION",
+						"fullPath": [
+							"REGION"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Muertes",
+						"fullPath": [
+							"Muertes"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"sqlQuery": "select * from myDataSource\nWHERE departamentos != 'TOTAL';",
+			"codeGenVersion": 2
+		},
+		"node-1747238563487": {
+			"nodeId": "node-1747238563487",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747238457396"
+			],
+			"name": "Change Schema",
+			"generatedNodeName": "ChangeSchema_node1747238563487",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "departamentos",
+					"fromPath": [
+						"departamentos"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "poblacion_de_1_anio_meta_programatica",
+					"fromPath": [
+						"Poblacion de 1 año (meta programatica)"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_anio_u_dosis",
+					"fromPath": [
+						"FA 1 AÑO (u DOSIS)"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "fa_1_anio_porc_de_cobertura",
+					"fromPath": [
+						"FA 1 AÑO (% DE COBERTURA)"
+					],
+					"toType": "float",
+					"fromType": "float",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "region",
+					"fromPath": [
+						"REGION"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "anio",
+					"fromPath": [
+						"Año"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "muertes",
+					"fromPath": [
+						"Muertes"
+					],
+					"toType": "int",
+					"fromType": "int",
+					"dropped": false,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747259623943": {
+			"nodeId": "node-1747259623943",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747242241773"
+			],
+			"name": "Drop Duplicates",
+			"generatedNodeName": "DropDuplicates_node1747259623943",
+			"classification": "Transform",
+			"type": "DropDuplicates",
+			"parentsValid": true,
+			"calculatedType": "",
+			"columns": [],
+			"codeGenVersion": 2
+		},
+		"node-1747241313846": {
+			"nodeId": "node-1747241313846",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747238563487"
+			],
+			"name": "Derived Column",
+			"generatedNodeName": "DerivedColumn_node1747241313846",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"DEPARTAMENTOS_Pais"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "expr",
+					"value": [
+						"CONCAT(departamentos, ', COLOMBIA') "
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_derived",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_derived.py",
+			"version": "1.0.0",
+			"transformName": "gs_derived",
+			"outputSchemas": [
+				[
+					{
+						"key": "Poblacion de 1 año (meta programatica)",
+						"fullPath": [
+							"Poblacion de 1 año (meta programatica)"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "REGION",
+						"fullPath": [
+							"REGION"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "FA 1 AÑO (UDósis)",
+						"fullPath": [
+							"FA 1 AÑO (UDósis)"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Muertes",
+						"fullPath": [
+							"Muertes"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "FA 1 AÑO (% DE COBERTURA)",
+						"fullPath": [
+							"FA 1 AÑO (% DE COBERTURA)"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "DEPARTAMENTOS",
+						"fullPath": [
+							"DEPARTAMENTOS"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "DEPARTAMENTOS, Pais",
+						"fullPath": [
+							"DEPARTAMENTOS, Pais"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747106340722": {
+			"nodeId": "node-1747106340722",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747079229382"
+			],
+			"name": "seleccionar columnas",
+			"generatedNodeName": "seleccionarcolumnas_node1747106340722",
+			"classification": "Transform",
+			"type": "ApplyMapping",
+			"mapping": [
+				{
+					"toKey": "anio",
+					"fromPath": [
+						"anio"
+					],
+					"toType": "int",
+					"fromType": "string",
+					"dropped": false,
+					"children": null
+				},
+				{
+					"toKey": "col1",
+					"fromPath": [
+						"col1"
+					],
+					"toType": "string",
+					"fromType": "string",
+					"dropped": true,
+					"children": null
+				}
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747106253914": {
+			"nodeId": "node-1747106253914",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747106340722"
+			],
+			"name": "UUID",
+			"generatedNodeName": "UUID_node1747106253914",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"idFecha"
+					],
+					"isOptional": true,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_uuid",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_uuid.py",
+			"version": "1.0.0",
+			"transformName": "gs_uuid",
+			"outputSchemas": [
+				[
+					{
+						"key": "anio",
+						"fullPath": [
+							"anio"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "idFecha",
+						"fullPath": [
+							"idFecha"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1747233441981": {
+			"nodeId": "node-1747233441981",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1747230319952"
+			],
+			"name": "agregar anio",
+			"generatedNodeName": "agregaranio_node1747233441981",
+			"classification": "Transform",
+			"type": "DynamicTransform",
+			"parameters": [
+				{
+					"name": "colName",
+					"value": [
+						"Año"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				},
+				{
+					"name": "expr",
+					"value": [
+						"2019"
+					],
+					"isOptional": false,
+					"type": "str",
+					"listType": null
+				}
+			],
+			"functionName": "gs_derived",
+			"path": "s3://aws-glue-studio-transforms-510798373988-prod-us-east-1/gs_derived.py",
+			"version": "1.0.0",
+			"transformName": "gs_derived",
+			"outputSchemas": [
+				[
+					{
+						"key": "departamentos",
+						"fullPath": [
+							"departamentos"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "poblacion_de_1_ano_meta_programatica",
+						"fullPath": [
+							"poblacion_de_1_ano_meta_programatica"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_udosis",
+						"fullPath": [
+							"fa_1_ano_udosis"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "fa_1_ano_de_cobertura",
+						"fullPath": [
+							"fa_1_ano_de_cobertura"
+						],
+						"type": "float",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "region",
+						"fullPath": [
+							"region"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "Año",
+						"fullPath": [
+							"Año"
+						],
+						"type": "int",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"parentsValid": true,
+			"calculatedType": "",
+			"codeGenVersion": 2
+		}
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null
+}
