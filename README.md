@@ -1,5 +1,6 @@
 # Yellow Fever Vaccination Analysis – Colombia (2016–2019)
 
+
 This project focuses on analyzing vaccination rates against **Yellow Fever** in Colombia between 2016 and 2019. Yellow Fever is a viral disease transmitted by mosquitoes and preventable with a single dose of vaccine, which provides lifetime protection. Despite Colombia’s national vaccination program (PAI), outbreaks and fatalities still occur, highlighting the need for improved strategies.  
 
 The main research question addressed is:  
@@ -8,6 +9,12 @@ The main research question addressed is:
 The project applies a **Business Intelligence approach** by integrating epidemiological data, building data marts, applying descriptive and inferential analysis, and visualizing results in interactive dashboards. The outcomes aim to support the Colombian Ministry of Health in reinforcing strategies, allocating resources, and improving vaccination coverage in vulnerable regions.  
 
 ---
+
+## Power BI Visualizations
+<img width="584" height="328" alt="Captura de pantalla 2025-09-21 131547" src="https://github.com/user-attachments/assets/01856735-1883-4ed2-ae37-75646ce35615" />
+<img width="583" height="331" alt="Captura de pantalla 2025-09-21 131533" src="https://github.com/user-attachments/assets/e670f360-a9d3-4327-993b-5dfb780a2a48" />
+<img width="590" height="331" alt="Captura de pantalla 2025-09-21 131602" src="https://github.com/user-attachments/assets/4baae747-3d80-4dec-84e4-2d6552b4b8d1" />
+
 
 ## Project Objectives
 - **Main Objective**  
